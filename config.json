@@ -26,10 +26,11 @@
     },
     "M3U8_DOWNLOAD": {
         "tqdm_delay": 0.01,
+        "download_video": false,
         "default_video_workser": 12,
         "default_audio_workser": 12,
         "segment_timeout": 8,
-        "download_audio": true,
+        "download_audio": false,
         "merge_audio": true,
         "specific_list_audio": [
             "ita"

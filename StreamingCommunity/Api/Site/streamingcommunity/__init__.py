@@ -12,6 +12,7 @@ from rich.prompt import Prompt
 
 # Internal utilities
 from StreamingCommunity.Api.Template import get_select_title
+from StreamingCommunity.Lib.Proxies.proxy import ProxyFinder
 from StreamingCommunity.Api.Template.config_loader import site_constant
 from StreamingCommunity.Api.Template.Class.SearchType import MediaItem
 from StreamingCommunity.TelegramHelp.telegram_bot import get_bot_instance
@@ -26,7 +27,7 @@ from .series import download_series
 # Variable
 indice = 0
 _useFor = "Film_&_Serie"
-_priority = 0
+_priority = 1
 _engineDownload = "hls"
 _deprecate = False
 
@@ -58,7 +59,7 @@ def get_user_input(string_to_search: str = None):
 
     return string_to_search
 
-def process_search_result(select_title, selections=None):
+def process_search_result(select_title, selections=None, proxy=None):
     """
     Handles the search result and initiates the download for either a film or series.
     
@@ -75,7 +76,7 @@ def process_search_result(select_title, selections=None):
             season_selection = selections.get('season')
             episode_selection = selections.get('episode')
 
-        download_series(select_title, season_selection, episode_selection)
+        download_series(select_title, season_selection, episode_selection, proxy)
 
     else:
         download_film(select_title)
@@ -114,7 +115,9 @@ def search(string_to_search: str = None, get_onlyDatabase: bool = False, direct_
             string_to_search = msg.ask(f"\n[purple]Insert a word to search in [green]{site_constant.SITE_NAME}").strip()
 
     # Search on database
-    len_database = title_search(string_to_search)
+    finder = ProxyFinder(site_constant.FULL_URL)
+    proxy = finder.find_fast_proxy()
+    len_database = title_search(string_to_search, proxy)
 
     # If only the database is needed, return the manager
     if get_onlyDatabase:
@@ -122,7 +125,7 @@ def search(string_to_search: str = None, get_onlyDatabase: bool = False, direct_
     
     if len_database > 0:
         select_title = get_select_title(table_show_manager, media_search_manager)
-        process_search_result(select_title, selections)
+        process_search_result(select_title, selections, proxy)
     
     else:
         # If no results are found, ask again

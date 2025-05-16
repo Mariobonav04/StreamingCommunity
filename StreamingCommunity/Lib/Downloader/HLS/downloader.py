@@ -33,7 +33,6 @@ from .segments import M3U8_Segments
 
 
 # Config
-ENABLE_VIDEO = config_manager.get_bool('M3U8_DOWNLOAD', 'download_video')
 ENABLE_AUDIO = config_manager.get_bool('M3U8_DOWNLOAD', 'download_audio')
 ENABLE_SUBTITLE = config_manager.get_bool('M3U8_DOWNLOAD', 'download_subtitle')
 DOWNLOAD_SPECIFIC_AUDIO = config_manager.get_list('M3U8_DOWNLOAD', 'specific_list_audio')
@@ -172,9 +171,6 @@ class M3U8Manager:
                 logging.error("Resolution not recognized.")
                 self.video_url, self.video_res = self.parser._video.get_best_uri()
 
-            if not ENABLE_VIDEO:
-                self.video_url = None
-
             self.audio_streams = []
             if ENABLE_AUDIO:
                 self.audio_streams = [
@@ -252,10 +248,6 @@ class DownloadManager:
 
     def download_video(self, video_url: str):
         """Downloads video segments from the M3U8 playlist."""
-        if video_url is None:
-            console.print("[red]Video URL is None, skipping video download.[/red]")
-            return False
-        
         video_full_url = self.url_fixer.generate_full_url(video_url)
         video_tmp_dir = os.path.join(self.temp_dir, 'video')
 
@@ -270,9 +262,8 @@ class DownloadManager:
 
     def download_audio(self, audio: Dict):
         """Downloads audio segments for a specific language track."""
-        if audio['uri'] is None:
-            console.print(f"[red]Audio URL is None for language {audio['language']}, skipping audio download.[/red]")
-            return False
+        #if self.stopped:
+        #    return True
 
         audio_full_url = self.url_fixer.generate_full_url(audio['uri'])
         audio_tmp_dir = os.path.join(self.temp_dir, 'audio', audio['language'])

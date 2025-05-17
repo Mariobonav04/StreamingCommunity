@@ -21,7 +21,7 @@ from .series import download_series
 # Variable
 indice = 7
 _useFor = "Film_&_Serie"
-_priority = 1
+_priority = 0
 _engineDownload = "hls"
 _deprecate = False
 

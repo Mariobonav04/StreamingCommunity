@@ -24,6 +24,15 @@
         "user": "admin",
         "pass": "adminadmin"
     },
+<<<<<<< Updated upstream
+=======
+    "REQUESTS": {
+        "verify": false,
+        "timeout": 20,
+        "max_retry": 8,
+        "proxy": ""
+    },
+>>>>>>> Stashed changes
     "M3U8_DOWNLOAD": {
         "tqdm_delay": 0.01,
         "default_video_workser": 12,
